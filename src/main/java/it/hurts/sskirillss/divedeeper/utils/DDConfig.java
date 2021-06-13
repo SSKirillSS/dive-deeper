@@ -15,6 +15,7 @@ public class DDConfig {
     public static ForgeConfigSpec.ConfigValue<List<? extends String>> DEALT_DAMAGE_ENTITIES_BLACKLIST;
     public static ForgeConfigSpec.DoubleValue INCOMING_DAMAGE_MULTIPLIER;
     public static ForgeConfigSpec.ConfigValue<List<? extends String>> INCOMING_DAMAGE_ENTITIES_BLACKLIST;
+    public static ForgeConfigSpec.DoubleValue HEALING_MULTIPLIER;
 
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -26,6 +27,7 @@ public class DDConfig {
         DEALT_DAMAGE_ENTITIES_BLACKLIST = builder.defineList("dealt_damage_entities_blacklist", Lists.newArrayList(), value -> value instanceof String);
         INCOMING_DAMAGE_MULTIPLIER = builder.defineInRange("incoming_damage_multiplier", 0.065, 0, 1);
         INCOMING_DAMAGE_ENTITIES_BLACKLIST = builder.defineList("incoming_damage_entities_blacklist", Lists.newArrayList(), value -> value instanceof String);
+        HEALING_MULTIPLIER = builder.defineInRange("healing_multiplier", 0.075, 0, 1);
 
         DD_CONFIG = builder.build();
     }

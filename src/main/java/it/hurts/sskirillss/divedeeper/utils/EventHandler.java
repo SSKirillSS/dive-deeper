@@ -5,6 +5,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -49,5 +50,15 @@ public class EventHandler {
         int difference = getLevelDifference(player.getEntityWorld(), player.getPosition().getY());
         if (difference <= 0) return;
         event.setAmount(event.getAmount() * (1 + difference * DDConfig.INCOMING_DAMAGE_MULTIPLIER.get().floatValue() * 0.15F));
+    }
+
+    @SubscribeEvent
+    public static void onPlayerHeal(LivingHealEvent event) {
+        LivingEntity entity = event.getEntityLiving();
+        if (!(entity instanceof PlayerEntity)) return;
+        PlayerEntity player = (PlayerEntity) entity;
+        int difference = getLevelDifference(player.getEntityWorld(), player.getPosition().getY());
+        if (difference <= 0) return;
+        event.setAmount(event.getAmount() * (1 - difference * DDConfig.HEALING_MULTIPLIER.get().floatValue() * 0.15F));
     }
 }
