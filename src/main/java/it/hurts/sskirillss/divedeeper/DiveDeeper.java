@@ -11,6 +11,7 @@ import net.minecraftforge.fml.config.ModConfig;
 public class DiveDeeper {
     public DiveDeeper() {
         MinecraftForge.EVENT_BUS.register(this);
+
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, DDConfig.DD_CONFIG);
     }
 }

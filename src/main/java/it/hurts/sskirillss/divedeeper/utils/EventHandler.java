@@ -21,11 +21,20 @@ public class EventHandler {
     public static void onDigSpeedCalculation(PlayerEvent.BreakSpeed event) {
         PlayerEntity player = event.getPlayer();
         World world = player.getEntityWorld();
-        if (DDConfig.DIMENSIONS_BLACKLIST.get().contains(world.getDimensionKey().getLocation().toString())) return;
+
+        if (DDConfig.DIMENSIONS_BLACKLIST.get().contains(world.getDimensionKey().getLocation().toString()))
+            return;
+
         BlockPos pos = event.getPos();
-        if (DDConfig.DIG_SPEED_BLOCKS_BLACKLIST.get().contains(world.getBlockState(pos).getBlock().getRegistryName().toString())) return;
+
+        if (DDConfig.DIG_SPEED_BLOCKS_BLACKLIST.get().contains(world.getBlockState(pos).getBlock().getRegistryName().toString()))
+            return;
+
         int difference = getLevelDifference(world, pos.getY());
-        if (difference <= 0) return;
+
+        if (difference <= 0)
+            return;
+
         event.setNewSpeed(event.getNewSpeed() * (1 - difference * DDConfig.DIG_SPEED_MULTIPLIER.get().floatValue() * 0.15F));
     }
 
@@ -33,13 +42,22 @@ public class EventHandler {
     public static void onEntityHurt(LivingHurtEvent event) {
         Entity entity = event.getSource().getTrueSource();
         LivingEntity target = event.getEntityLiving();
-        if (!(entity instanceof PlayerEntity) || target instanceof PlayerEntity) return;
+
+        if (!(entity instanceof PlayerEntity) || target instanceof PlayerEntity)
+            return;
+
         PlayerEntity player = (PlayerEntity) entity;
         World world = player.getEntityWorld();
-        if (DDConfig.DIMENSIONS_BLACKLIST.get().contains(world.getDimensionKey().getLocation().toString())) return;
-        if (DDConfig.DEALT_DAMAGE_ENTITIES_BLACKLIST.get().contains(target.getType().getRegistryName().toString())) return;
+
+        if (DDConfig.DIMENSIONS_BLACKLIST.get().contains(world.getDimensionKey().getLocation().toString())
+                || DDConfig.DEALT_DAMAGE_ENTITIES_BLACKLIST.get().contains(target.getType().getRegistryName().toString()))
+            return;
+
         int difference = getLevelDifference(world, target.getPosition().getY());
-        if (difference <= 0) return;
+
+        if (difference <= 0)
+            return;
+
         event.setAmount(event.getAmount() * (1 - difference * DDConfig.DEALT_DAMAGE_MULTIPLIER.get().floatValue() * 0.15F));
     }
 
@@ -47,25 +65,43 @@ public class EventHandler {
     public static void onPlayerHurt(LivingHurtEvent event) {
         LivingEntity entity = event.getEntityLiving();
         Entity source = event.getSource().getTrueSource();
-        if (!(entity instanceof PlayerEntity) || source == null || source instanceof PlayerEntity) return;
+
+        if (!(entity instanceof PlayerEntity) || source == null || source instanceof PlayerEntity)
+            return;
+
         PlayerEntity player = (PlayerEntity) entity;
         World world = player.getEntityWorld();
-        if (DDConfig.DIMENSIONS_BLACKLIST.get().contains(world.getDimensionKey().getLocation().toString())) return;
-        if (DDConfig.INCOMING_DAMAGE_ENTITIES_BLACKLIST.get().contains(source.getType().getRegistryName().toString())) return;
+
+        if (DDConfig.DIMENSIONS_BLACKLIST.get().contains(world.getDimensionKey().getLocation().toString())
+                || DDConfig.INCOMING_DAMAGE_ENTITIES_BLACKLIST.get().contains(source.getType().getRegistryName().toString()))
+            return;
+
         int difference = getLevelDifference(world, player.getPosition().getY());
-        if (difference <= 0) return;
+
+        if (difference <= 0)
+            return;
+
         event.setAmount(event.getAmount() * (1 + difference * DDConfig.INCOMING_DAMAGE_MULTIPLIER.get().floatValue() * 0.15F));
     }
 
     @SubscribeEvent
     public static void onPlayerHeal(LivingHealEvent event) {
         LivingEntity entity = event.getEntityLiving();
-        if (!(entity instanceof PlayerEntity)) return;
+
+        if (!(entity instanceof PlayerEntity))
+            return;
+
         PlayerEntity player = (PlayerEntity) entity;
         World world = player.getEntityWorld();
-        if (DDConfig.DIMENSIONS_BLACKLIST.get().contains(world.getDimensionKey().getLocation().toString())) return;
+
+        if (DDConfig.DIMENSIONS_BLACKLIST.get().contains(world.getDimensionKey().getLocation().toString()))
+            return;
+
         int difference = getLevelDifference(world, player.getPosition().getY());
-        if (difference <= 0) return;
+
+        if (difference <= 0)
+            return;
+
         event.setAmount(event.getAmount() * (1 - difference * DDConfig.HEALING_MULTIPLIER.get().floatValue() * 0.15F));
     }
 }
