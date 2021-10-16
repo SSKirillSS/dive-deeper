@@ -1,10 +1,10 @@
 package it.hurts.sskirillss.divedeeper.utils;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -13,16 +13,16 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber
 public class EventHandler {
-    private static int getLevelDifference(World world, int level, int altitude) {
+    private static int getLevelDifference(Level world, int level, int altitude) {
         return (level == -1 ? world.getSeaLevel() : level) - altitude;
     }
 
     @SubscribeEvent
     public static void onDigSpeedCalculation(PlayerEvent.BreakSpeed event) {
-        PlayerEntity player = event.getPlayer();
-        World world = player.getEntityWorld();
+        Player player = event.getPlayer();
+        Level world = player.getCommandSenderWorld();
 
-        if (DDConfig.DiggingModifier.DIMENSIONS_BLACKLIST.get().contains(world.getDimensionKey().getLocation().toString()))
+        if (DDConfig.DiggingModifier.DIMENSIONS_BLACKLIST.get().contains(world.dimension().location().toString()))
             return;
 
         BlockPos pos = event.getPos();
@@ -40,20 +40,20 @@ public class EventHandler {
 
     @SubscribeEvent
     public static void onEntityHurt(LivingHurtEvent event) {
-        Entity entity = event.getSource().getTrueSource();
+        Entity entity = event.getSource().getEntity();
         LivingEntity target = event.getEntityLiving();
 
-        if (!(entity instanceof PlayerEntity) || target instanceof PlayerEntity)
+        if (!(entity instanceof Player) || target instanceof Player)
             return;
 
-        PlayerEntity player = (PlayerEntity) entity;
-        World world = player.getEntityWorld();
+        Player player = (Player) entity;
+        Level world = player.getCommandSenderWorld();
 
-        if (DDConfig.DealtDamageModifier.DIMENSIONS_BLACKLIST.get().contains(world.getDimensionKey().getLocation().toString())
+        if (DDConfig.DealtDamageModifier.DIMENSIONS_BLACKLIST.get().contains(world.dimension().location().toString())
                 || DDConfig.DealtDamageModifier.ENTITIES_BLACKLIST.get().contains(target.getType().getRegistryName().toString()))
             return;
 
-        int difference = getLevelDifference(world, DDConfig.DealtDamageModifier.SEA_LEVEL.get(), target.getPosition().getY());
+        int difference = getLevelDifference(world, DDConfig.DealtDamageModifier.SEA_LEVEL.get(), target.blockPosition().getY());
 
         if (difference <= 0)
             return;
@@ -64,19 +64,19 @@ public class EventHandler {
     @SubscribeEvent
     public static void onPlayerHurt(LivingHurtEvent event) {
         LivingEntity entity = event.getEntityLiving();
-        Entity source = event.getSource().getTrueSource();
+        Entity source = event.getSource().getEntity();
 
-        if (!(entity instanceof PlayerEntity) || source == null || source instanceof PlayerEntity)
+        if (!(entity instanceof Player) || source == null || source instanceof Player)
             return;
 
-        PlayerEntity player = (PlayerEntity) entity;
-        World world = player.getEntityWorld();
+        Player player = (Player) entity;
+        Level world = player.getCommandSenderWorld();
 
-        if (DDConfig.IncomingDamageModifier.DIMENSIONS_BLACKLIST.get().contains(world.getDimensionKey().getLocation().toString())
+        if (DDConfig.IncomingDamageModifier.DIMENSIONS_BLACKLIST.get().contains(world.dimension().location().toString())
                 || DDConfig.IncomingDamageModifier.ENTITIES_BLACKLIST.get().contains(source.getType().getRegistryName().toString()))
             return;
 
-        int difference = getLevelDifference(world, DDConfig.IncomingDamageModifier.SEA_LEVEL.get(), player.getPosition().getY());
+        int difference = getLevelDifference(world, DDConfig.IncomingDamageModifier.SEA_LEVEL.get(), player.blockPosition().getY());
 
         if (difference <= 0)
             return;
@@ -88,16 +88,16 @@ public class EventHandler {
     public static void onPlayerHeal(LivingHealEvent event) {
         LivingEntity entity = event.getEntityLiving();
 
-        if (!(entity instanceof PlayerEntity))
+        if (!(entity instanceof Player))
             return;
 
-        PlayerEntity player = (PlayerEntity) entity;
-        World world = player.getEntityWorld();
+        Player player = (Player) entity;
+        Level world = player.getCommandSenderWorld();
 
-        if (DDConfig.HealingModifier.DIMENSIONS_BLACKLIST.get().contains(world.getDimensionKey().getLocation().toString()))
+        if (DDConfig.HealingModifier.DIMENSIONS_BLACKLIST.get().contains(world.dimension().location().toString()))
             return;
 
-        int difference = getLevelDifference(world, DDConfig.HealingModifier.SEA_LEVEL.get(), player.getPosition().getY());
+        int difference = getLevelDifference(world, DDConfig.HealingModifier.SEA_LEVEL.get(), player.blockPosition().getY());
 
         if (difference <= 0)
             return;

@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.divedeeper.utils;
 
 import com.google.common.collect.Lists;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.Collections;
@@ -20,7 +20,7 @@ public class DDConfig {
             builder.push("digging");
 
             SEA_LEVEL = builder.defineInRange("sea_level", -1, -1, Integer.MAX_VALUE);
-            DIMENSIONS_BLACKLIST = builder.defineList("dimensions_blacklist", Collections.singletonList(World.THE_END.getLocation().toString()), value -> value instanceof String);
+            DIMENSIONS_BLACKLIST = builder.defineList("dimensions_blacklist", Collections.singletonList(Level.END.location().toString()), value -> value instanceof String);
             BLOCKS_BLACKLIST = builder.defineList("blocks_blacklist", Lists.newArrayList(), value -> value instanceof String);
             MULTIPLIER = builder.defineInRange("multiplier", 0.075, 0, 1);
 
@@ -38,7 +38,7 @@ public class DDConfig {
             builder.push("dealt damage");
 
             SEA_LEVEL = builder.defineInRange("sea_level", -1, -1, Integer.MAX_VALUE);
-            DIMENSIONS_BLACKLIST = builder.defineList("dimensions_blacklist", Collections.singletonList(World.THE_END.getLocation().toString()), value -> value instanceof String);
+            DIMENSIONS_BLACKLIST = builder.defineList("dimensions_blacklist", Collections.singletonList(Level.END.location().toString()), value -> value instanceof String);
             ENTITIES_BLACKLIST = builder.defineList("entities_blacklist", Lists.newArrayList(), value -> value instanceof String);
             MULTIPLIER = builder.defineInRange("multiplier", 0.05, 0, 1);
 
@@ -56,7 +56,7 @@ public class DDConfig {
             builder.push("incoming damage");
 
             SEA_LEVEL = builder.defineInRange("sea_level", -1, -1, Integer.MAX_VALUE);
-            DIMENSIONS_BLACKLIST = builder.defineList("dimensions_blacklist", Collections.singletonList(World.THE_END.getLocation().toString()), value -> value instanceof String);
+            DIMENSIONS_BLACKLIST = builder.defineList("dimensions_blacklist", Collections.singletonList(Level.END.location().toString()), value -> value instanceof String);
             ENTITIES_BLACKLIST = builder.defineList("entities_blacklist", Lists.newArrayList(), value -> value instanceof String);
             MULTIPLIER = builder.defineInRange("multiplier", 0.065, 0, 1);
 
@@ -73,7 +73,7 @@ public class DDConfig {
             builder.push("healing");
 
             SEA_LEVEL = builder.defineInRange("sea_level", -1, -1, Integer.MAX_VALUE);
-            DIMENSIONS_BLACKLIST = builder.defineList("dimensions_blacklist", Collections.singletonList(World.THE_END.getLocation().toString()), value -> value instanceof String);
+            DIMENSIONS_BLACKLIST = builder.defineList("dimensions_blacklist", Collections.singletonList(Level.END.location().toString()), value -> value instanceof String);
             MULTIPLIER = builder.defineInRange("multiplier", 0.075, 0, 1);
 
             builder.pop();
