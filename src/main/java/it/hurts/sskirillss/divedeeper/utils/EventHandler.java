@@ -13,8 +13,8 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber
 public class EventHandler {
-    public static int getLevelDifference(World world, int altitude) {
-        return (DDConfig.SEA_LEVEL.get() == -1 ? world.getSeaLevel() : DDConfig.SEA_LEVEL.get()) - altitude;
+    private static int getLevelDifference(World world, int level, int altitude) {
+        return (level == -1 ? world.getSeaLevel() : level) - altitude;
     }
 
     @SubscribeEvent
@@ -22,20 +22,20 @@ public class EventHandler {
         PlayerEntity player = event.getPlayer();
         World world = player.getEntityWorld();
 
-        if (DDConfig.DIMENSIONS_BLACKLIST.get().contains(world.getDimensionKey().getLocation().toString()))
+        if (DDConfig.DiggingModifier.DIMENSIONS_BLACKLIST.get().contains(world.getDimensionKey().getLocation().toString()))
             return;
 
         BlockPos pos = event.getPos();
 
-        if (DDConfig.DIG_SPEED_BLOCKS_BLACKLIST.get().contains(world.getBlockState(pos).getBlock().getRegistryName().toString()))
+        if (DDConfig.DiggingModifier.BLOCKS_BLACKLIST.get().contains(world.getBlockState(pos).getBlock().getRegistryName().toString()))
             return;
 
-        int difference = getLevelDifference(world, pos.getY());
+        int difference = getLevelDifference(world, DDConfig.DiggingModifier.SEA_LEVEL.get(), pos.getY());
 
         if (difference <= 0)
             return;
 
-        event.setNewSpeed(event.getNewSpeed() * (1 - difference * DDConfig.DIG_SPEED_MULTIPLIER.get().floatValue() * 0.15F));
+        event.setNewSpeed(event.getNewSpeed() * (1 - difference * DDConfig.DiggingModifier.MULTIPLIER.get().floatValue() * 0.15F));
     }
 
     @SubscribeEvent
@@ -49,16 +49,16 @@ public class EventHandler {
         PlayerEntity player = (PlayerEntity) entity;
         World world = player.getEntityWorld();
 
-        if (DDConfig.DIMENSIONS_BLACKLIST.get().contains(world.getDimensionKey().getLocation().toString())
-                || DDConfig.DEALT_DAMAGE_ENTITIES_BLACKLIST.get().contains(target.getType().getRegistryName().toString()))
+        if (DDConfig.DealtDamageModifier.DIMENSIONS_BLACKLIST.get().contains(world.getDimensionKey().getLocation().toString())
+                || DDConfig.DealtDamageModifier.ENTITIES_BLACKLIST.get().contains(target.getType().getRegistryName().toString()))
             return;
 
-        int difference = getLevelDifference(world, target.getPosition().getY());
+        int difference = getLevelDifference(world, DDConfig.DealtDamageModifier.SEA_LEVEL.get(), target.getPosition().getY());
 
         if (difference <= 0)
             return;
 
-        event.setAmount(event.getAmount() * (1 - difference * DDConfig.DEALT_DAMAGE_MULTIPLIER.get().floatValue() * 0.15F));
+        event.setAmount(event.getAmount() * (1 - difference * DDConfig.DealtDamageModifier.MULTIPLIER.get().floatValue() * 0.15F));
     }
 
     @SubscribeEvent
@@ -72,16 +72,16 @@ public class EventHandler {
         PlayerEntity player = (PlayerEntity) entity;
         World world = player.getEntityWorld();
 
-        if (DDConfig.DIMENSIONS_BLACKLIST.get().contains(world.getDimensionKey().getLocation().toString())
-                || DDConfig.INCOMING_DAMAGE_ENTITIES_BLACKLIST.get().contains(source.getType().getRegistryName().toString()))
+        if (DDConfig.IncomingDamageModifier.DIMENSIONS_BLACKLIST.get().contains(world.getDimensionKey().getLocation().toString())
+                || DDConfig.IncomingDamageModifier.ENTITIES_BLACKLIST.get().contains(source.getType().getRegistryName().toString()))
             return;
 
-        int difference = getLevelDifference(world, player.getPosition().getY());
+        int difference = getLevelDifference(world, DDConfig.IncomingDamageModifier.SEA_LEVEL.get(), player.getPosition().getY());
 
         if (difference <= 0)
             return;
 
-        event.setAmount(event.getAmount() * (1 + difference * DDConfig.INCOMING_DAMAGE_MULTIPLIER.get().floatValue() * 0.15F));
+        event.setAmount(event.getAmount() * (1 + difference * DDConfig.IncomingDamageModifier.MULTIPLIER.get().floatValue() * 0.15F));
     }
 
     @SubscribeEvent
@@ -94,14 +94,14 @@ public class EventHandler {
         PlayerEntity player = (PlayerEntity) entity;
         World world = player.getEntityWorld();
 
-        if (DDConfig.DIMENSIONS_BLACKLIST.get().contains(world.getDimensionKey().getLocation().toString()))
+        if (DDConfig.HealingModifier.DIMENSIONS_BLACKLIST.get().contains(world.getDimensionKey().getLocation().toString()))
             return;
 
-        int difference = getLevelDifference(world, player.getPosition().getY());
+        int difference = getLevelDifference(world, DDConfig.HealingModifier.SEA_LEVEL.get(), player.getPosition().getY());
 
         if (difference <= 0)
             return;
 
-        event.setAmount(event.getAmount() * (1 - difference * DDConfig.HEALING_MULTIPLIER.get().floatValue() * 0.15F));
+        event.setAmount(event.getAmount() * (1 - difference * DDConfig.HealingModifier.MULTIPLIER.get().floatValue() * 0.15F));
     }
 }
